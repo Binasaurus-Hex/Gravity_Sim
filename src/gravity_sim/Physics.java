@@ -2,8 +2,8 @@ package gravity_sim;
 import static java.lang.Math.*;
 public class Physics {
 	
-	static double G = (6.67* pow(10,-11));
-	
+	static double G = 6.67 * pow(10,-11);
+	static double scalar= 2 * pow(10,7);
 	/*
 	 * Get the gravitational force between two planets
 	 * @param M Planet 1's mass
@@ -45,6 +45,19 @@ public class Physics {
 		double mass = density*volume;
 		return mass;
 	}
+	
+	public static double scale(double value, Direction direction) {
+		if(direction==Direction.UP) {
+			return value*scalar;
+			
+		}
+		if(direction==Direction.DOWN) {
+			return value/scalar;
+		}
+		else {
+			return (Double) null;
+		}
+	}	
 }
 
 

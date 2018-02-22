@@ -39,14 +39,16 @@ public class Window extends JComponent {
 		for (int i = 0; i < PlanetArray.length; i++) {
 			
 			// Generate coords
-			int x = r.nextInt(500);
-			int y = r.nextInt(500);
+			double x = Physics.scale(r.nextInt(600),Direction.UP);
+			double y = Physics.scale(r.nextInt(600),Direction.UP);
 			
 			// Generate radius
-			int radius = (int) (10 + r.nextInt(50));
+			double rangeMin=2*pow(10,6);
+			double rangeMax=7*pow(10,8);
+			double radius = rangeMin+((rangeMax-rangeMin)*r.nextDouble());
 			
 			// Generate mass
-			double mass = Physics.mass(pow(10, 13), radius);
+			double mass = Physics.mass(2000, radius);
 			
 			// Create each planet and add to array
 			PlanetArray[i] = new Planet(mass, radius, x, y, 10, -10);
@@ -62,9 +64,9 @@ public class Window extends JComponent {
 		g.setColor(Color.blue);
 		for(Planet p: PlanetArray){
 			g.setColor(Color.BLACK);
-			int radius = (int) p.getRadius();
+			int radius = (int) Physics.scale(p.getRadius(),Direction.DOWN);
 			double position[] = p.getPos();
-			g.drawOval((int) position[0], (int) position[1], 2*radius, 2*radius);
+			g.drawOval((int) Physics.scale(position[0],Direction.DOWN)-radius, (int)Physics.scale(position[1], Direction.DOWN)-radius, 2*radius, 2*radius);
 		}
 	}
 }
