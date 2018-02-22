@@ -111,19 +111,15 @@ public class Planet {
 				 resultantforceY += yforce;
 			 }
 		 }
-		 System.out.println("resultant x:"+resultantforceX);
-		 System.out.println("resultant y:"+resultantforceY);
 		 double resultantAccX = resultantforceX/this.mass;
 		 double resultantAccY = resultantforceY/this.mass;
-		 double time = 10;
+		 double time = 1;
 		 double displacementX = (this.Vx*time) + (0.5*resultantAccX*Math.pow(time, 2.0));
 		 double displacementY = (this.Vy*time) + (0.5*resultantAccY*Math.pow(time, 2.0));
 		 this.Vx=this.Vx+(resultantAccX*time);
 		 this.Vy=this.Vy+(resultantAccY*time);
 		 this.x = this.x + displacementX;
 		 this.y = this.y + displacementY;
-		 System.out.println("x="+this.x);
-		 System.out.println("y="+this.y);
 	}
 	
 }
