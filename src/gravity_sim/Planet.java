@@ -21,7 +21,7 @@ public class Planet {
 	
 	@Override
 	public String toString() {
-		return String.format("Planet<x=%.2f, y=%.2f, r=%.2f>",
+		return String.format("Planet[x=%.2f, y=%.2f, r=%.2f]",
 				this.x,
 				this.y,
 				this.radius);
@@ -58,8 +58,8 @@ public class Planet {
 	/*
 	 * Gets the velocity of the planet
 	 */
-	public double[] getVel(){
-		double[] vel= {Vx,Vy};
+	public double[] getVelocity(){
+		double[] vel= {Vx, Vy};
 		return vel;
 	}
 	
@@ -69,14 +69,19 @@ public class Planet {
 	public double getRadius() {
 		return this.radius;
 	}
-	public double getMass(){
+	
+	/*
+	 * Get the mass of the planet
+	 */
+	public double getMass() {
 		return this.mass;
 	}
 	
 	/*
 	 * Says which direction the planet is moving in
+	 * If 1, then it's moving positively (right, down)
 	 */
-	public int direction(double x1, double x2){
+	public int direction(double x1, double x2) {
 		int xdir = -1;
 		if(x2 > x1){
 			xdir = 1;
@@ -94,44 +99,73 @@ public class Planet {
 	}
 	
 	/*
-	 * Gets the angle between this and another planet (rads)
+	 * Gets the angle between this and another planet (radians)
 	 */
 	public double getAngle(Planet p) {
+		double[] aC = this.getPos();
 		double[] bC = p.getPos();
-		return Physics.angle(this.x, this.y, bC[0], bC[1]);
+		return Physics.angle(aC[0], aC[1], bC[0], bC[1]);
 	}
 	
 	/*
 	 * Gets the gravitational force between this and another planet
+	 * @param p The planet to be checked against
+	 * @return The force between the two planets
 	 */
 	public double getForce(Planet p) {
-		return Physics.force(this.mass, p.mass, this.getDistance(p));
+		double M = this.getMass();
+		double m = p.getMass();
+		double d = this.getDistance(p);
+		return Physics.force(M, m, d);
 	}
 	
 	/*
-	 * Checks if the current planet is colliding with the inputed planet
+	 * Checks if this planet has collided with another, given, planet
+	 * @param p The planet to be checked against
+	 * @return Whether or not the two have collided
 	 */
-	public void collision(CopyOnWriteArrayList<Planet> planetList){
-		for(Planet p: planetList){
-			if(p != this){
-				double[] bC = p.getPos();
-				double bR = p.getRadius();
-				if(Physics.intersectCircle(this.x, this.y, this.radius, bC[0], bC[1], bR)){
-					if(this.radius > p.getRadius()){
+	public boolean hasCollided(Planet p) {
+		double[] aP = this.getPos();
+		double[] bP = p.getPos();
+		double aR = this.getRadius();
+		double bR = p.getRadius();
+		return Physics.intersectCircle(aP[0], aP[1], aR, bP[0], bP[1], bR);
+	}
+	
+	/*
+	 * Goes through each planet in the array, checking if it has collided with another planet
+	 * If it has, it removes the smaller of the two (possibly itself) from the array
+	 */
+	public void collisionChecker(CopyOnWriteArrayList<Planet> planetList){
+		for (Planet p: planetList){
+			if (p != this){
+				if (this.hasCollided(p)) {
+					if (this.radius > p.getRadius()){
+						// Combine the mass of this and the collided planet
 						double combinedMass = this.mass + p.getMass();
-						double[] aV =this.getVel();
-						double[] bV =p.getVel();
-						double combinedVelX = aV[0]+bV[0];
-						double combinedVelY = aV[1]+bV[1];
-						this.mass=combinedMass;
-						this.Vx=combinedVelX;
-						this.Vy=combinedVelY;
+						this.mass = combinedMass;
+						
+						// Increase radius slightly?
+						// pass
+						
+						// Combine the velocities
+						double[] aV = this.getVelocity();
+						double[] bV = p.getVelocity();
+						double combinedVelX = aV[0] + bV[0];
+						double combinedVelY = aV[1] + bV[1];
+						this.Vx = combinedVelX;
+						this.Vy = combinedVelY;
+						
+						// Remove the other planet from the list
 						planetList.remove(p);
 						
+						// Print out that the planet has been destroyed
 						System.out.print(p);
 						System.out.print(" : Remaining ");
 						Planet.planetCount--;
 						System.out.println(Planet.planetCount);
+						
+						return; // Since it can only collide with something once before it stops existing
 					}
 				}
 			}
@@ -139,7 +173,7 @@ public class Planet {
 	}
 	
 	/*
-	 * Moves the current planet
+	 * Moves the current planet, should be run once a tick
 	 */
 	public void move(CopyOnWriteArrayList<Planet> planetList) {
 		if (!this.canMove) return;

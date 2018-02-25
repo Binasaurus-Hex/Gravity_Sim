@@ -60,18 +60,33 @@ public class Physics {
 	}
 	
 	/*
-	 * checks if two circles are intersecting
-	 * returns true if they are intersecting
+	 * Checks if two circles are intersecting, or INSIDE one another
+	 * Returns true if they are intersecting
+	 * @param x1
+	 * @param y1
+	 * @param r1
+	 * @param x2
+	 * @param y2
+	 * @param r2
+	 * @return Whether or not the two circles would be intersecting
 	 */
-	public static boolean intersectCircle(double x1,double y1,double r1,double x2,double y2,double r2){
+	public static boolean intersectCircle(double x1, double y1, double r1, double x2, double y2, double r2){
 		return distance(x1, y1, x2, y2) < r1 + r2;
 	}
 	
-	public static double[] midpoint(double x1,double y1,double x2,double y2){
-		double midx=(x2+x1)/2;
-		double midy=(y2+y1)/2;
-		double midPos[] ={midx,midy};
-		return midPos;
+	/*
+	 * Gets the midpoint of two coordinates
+	 * @param x1
+	 * @param y1
+	 * @param x2
+	 * @param y2
+	 * @return The coordinate of the midpoint
+	 */
+	public static double[] midpoint(double x1, double y1, double x2, double y2){
+		double midx = (x2 + x1) / 2;
+		double midy = (y2 + y1) / 2;
+		double[] midpoint = {midx, midy};
+		return midpoint;
 	}
 }
 

@@ -31,7 +31,7 @@ public class Window extends JComponent {
 				
 			}
 			for (Planet p: planetList){
-				p.collision(planetList);
+				p.collisionChecker(planetList);
 			}
 			f.repaint();
 		}
