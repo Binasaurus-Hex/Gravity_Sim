@@ -58,13 +58,17 @@ public class Window extends JComponent {
 			Planet planet = new Planet(mass, radius, x, y,Physics.scale(0.1,Direction.UP),Physics.scale(-0.1,Direction.UP));
 			planetList.add(i, planet);
 		}
-		//create a large "Sun" planet (for demo purposes)
-		double x = Physics.scale(r.nextInt(900),Direction.UP);
-		double y = Physics.scale(r.nextInt(900),Direction.UP);
-		double radius = 6*pow(10,9);
+		
+		// Create a large "Sun" planet (for demo purposes)
+		// double x = Physics.scale(r.nextInt(900), Direction.UP);
+		// double y = Physics.scale(r.nextInt(900), Direction.UP);
+		double x = Physics.scale(810, Direction.UP);
+		double y = Physics.scale(540, Direction.UP);
+		double radius = 6*pow(10, 9);
 		double mass = Physics.mass(2000, radius);
-		Planet Sun = new Planet(mass, radius, x, y,0,0);
-		planetList.add(0,Sun);
+		Planet sun = new Planet(mass, radius, x, y, 0, 0);
+		sun.canMove = false;
+		planetList.add(0, sun);
 		
 	}
 	

@@ -6,6 +6,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class Planet {
 	private double mass, radius;
 	private double Vx,Vy,x,y;
+	public boolean canMove = true;
 	
 	
 	public Planet(double mass,double radius){
@@ -128,9 +129,10 @@ public class Planet {
 		}
 	}
 	/*
-	 * moves the current planet
+	 * Moves the current planet
 	 */
 	public void move(CopyOnWriteArrayList<Planet> planetList) {
+		if (!this.canMove) return;
 		double resultantforceX = 0;
 		double resultantforceY = 0;
 		for(Planet p: planetList){	//iterate through the other planets
