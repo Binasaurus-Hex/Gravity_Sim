@@ -1,4 +1,8 @@
 package gravity_sim;
+
+import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 public class Planet {
 	private double mass, radius;
 	private double Vx,Vy,x,y;
@@ -60,6 +64,9 @@ public class Planet {
 	public double getRadius() {
 		return this.radius;
 	}
+	public double getMass(){
+		return this.mass;
+	}
 	
 	/*
 	 * Says which direction the planet is moving in
@@ -82,7 +89,7 @@ public class Planet {
 	}
 	
 	/*
-	 * Gets the angle between this and another planet
+	 * Gets the angle between this and another planet (rads)
 	 */
 	private double getAngle(Planet p) {
 		double[] bC = p.getPos();
@@ -90,38 +97,67 @@ public class Planet {
 	}
 	
 	/*
-	 * Gets the effective force between this and another planet
+	 * Gets the gravitational force between this and another planet
 	 */
 	private double getForce(Planet p) {
 		return Physics.force(this.mass, p.mass, this.getDistance(p));
 	}
 	
-	public void move(Planet PlanetArray[]) {
-		 double resultantforceX = 0;
-		 double resultantforceY = 0;
-		 for(Planet p: PlanetArray) {
-			 if(p != this){
-				 double angle = this.getAngle(p);
-				 double force = this.getForce(p);
-				 int xdir = direction(this.x, p.x);
-				 int ydir = direction(this.y, p.y);
-				 double xforce = xdir * force * Math.cos(angle);
-				 double yforce = ydir * force * Math.sin(angle);
-				 resultantforceX += xforce;
-				 resultantforceY += yforce;
-			 }
-		 }
-		 System.out.println("resultant x:"+resultantforceX);
-		 System.out.println("resultant y:"+resultantforceY);
-		 double resultantAccX = resultantforceX/this.mass;
-		 double resultantAccY = resultantforceX/this.mass;
-		 double time = 1;
-		 double displacementX = (this.Vx*time) + (0.5*resultantAccX*Math.pow(time, 2.0));
-		 double displacementY = (this.Vy*time) + (0.5*resultantAccY*Math.pow(time, 2.0));
-		 this.x = this.x + (displacementX/(6*Math.pow(10,5)));
-		 this.y = this.y + (displacementY/(6*Math.pow(10,5)));
-		 System.out.println("x="+this.x);
-		 System.out.println("y="+this.y);
+	/*
+	 * checks if the current planet is colliding with the inputed planet
+	 */
+	public void collision(CopyOnWriteArrayList<Planet> planetList){
+		for(Planet p: planetList){
+			System.out.println("starting");
+			if(p != this){
+				System.out.println("planet");
+				double[] bC = p.getPos();
+				double bR = p.getRadius();
+				if(Physics.intersectCircle(this.x, this.y,this.radius,bC[0],bC[1],bR)){
+					if(this.radius>p.getRadius()){
+						double combinedMass=this.mass+p.getMass();
+						double[] aV =this.getVel();
+						double[] bV =p.getVel();
+						double combinedVelX = aV[0]+bV[0];
+						double combinedVelY = aV[1]+bV[1];
+						this.mass=combinedMass;
+						this.Vx=combinedVelX;
+						this.Vy=combinedVelY;
+						planetList.remove(p);
+					}
+				}
+			}
+		}
+	}
+	/*
+	 * moves the current planet
+	 */
+	public void move(CopyOnWriteArrayList<Planet> planetList) {
+		System.out.println();
+		double resultantforceX = 0;
+		double resultantforceY = 0;
+		for(Planet p: planetList){	//iterate through the other planets
+			if(p != this){
+				double angle = this.getAngle(p);	//calculates the x and y components of the resultant force
+				double force = this.getForce(p);
+				int xdir = direction(this.x, p.x);
+				int ydir = direction(this.y, p.y);
+				double xforce = xdir * force * Math.cos(angle);
+				double yforce = ydir * force * Math.sin(angle);
+				resultantforceX += xforce;
+				resultantforceY += yforce;
+			}
+		}
+		double resultantAccX = resultantforceX/this.mass;	//calculates distance and moves planet accordingly
+		double resultantAccY = resultantforceY/this.mass;
+		double time = 1;	//time over which the acceleration is applied
+		double displacementX = (this.Vx*time) + (0.5*resultantAccX*Math.pow(time, 2.0));
+		double displacementY = (this.Vy*time) + (0.5*resultantAccY*Math.pow(time, 2.0));
+		this.Vx=this.Vx+(resultantAccX*time);
+		this.Vy=this.Vy+(resultantAccY*time);
+		this.x = this.x + displacementX;
+		this.y = this.y + displacementY;
+		
 	}
 	
 }

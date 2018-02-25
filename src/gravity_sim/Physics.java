@@ -2,8 +2,8 @@ package gravity_sim;
 import static java.lang.Math.*;
 public class Physics {
 	
-	static double G = (6.67* pow(10,-11));
-	
+	private static double G = 6.67 * pow(10,-11);
+	private static double scalar= 2 * pow(10,7);
 	/*
 	 * Get the gravitational force between two planets
 	 * @param M Planet 1's mass
@@ -44,6 +44,45 @@ public class Physics {
 		double volume = (4/3)*PI*pow(radius,3);
 		double mass = density*volume;
 		return mass;
+	}
+	/*
+	 * scales between pixel and to scale measurements for distance
+	 * has a parameter direction for scaling up: Direction.UP =(pixel to scale)
+	 * 							or scaling down: Direction.DOWN = (scale to pixel)
+	 */
+	public static double scale(double value, Direction direction) {
+		if(direction==Direction.UP) {
+			return value*scalar;
+			
+		}
+		if(direction==Direction.DOWN) {
+			return value/scalar;
+		}
+		else {
+			return (Double) null;
+		}
+	}
+	/*
+	 * checks if two circles are intersecting
+	 * returns true if they are false if they arn't
+	 */
+	public static boolean intersectCircle(double x1,double y1,double r1,double x2,double y2,double r2){
+		double distance =distance(x1,y1,x2,y2);
+		double diff = Math.abs(r2-r1);
+		double add  = Math.abs(r2+r1);
+		if((distance>=diff)&&(distance<=add)){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+	
+	public static double[] midpoint(double x1,double y1,double x2,double y2){
+		double midx=(x2+x1)/2;
+		double midy=(y2+y1)/2;
+		double midPos[] ={midx,midy};
+		return midPos;
 	}
 }
 
