@@ -1,6 +1,5 @@
 package gravity_sim;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -39,7 +38,7 @@ public class Window extends JComponent {
 	 * Generate each of the planets
 	 */
 	public Window() {
-		int planetNumber=30;
+		int planetNumber = 100;
 		Random r = new Random();
 		for (int i = 0; i < planetNumber; i++) {
 			
@@ -55,16 +54,27 @@ public class Window extends JComponent {
 			double mass = Physics.mass(density, radius);
 			
 			// Create each planet and add to array
-			Planet planet = new Planet(mass, radius, x, y,Physics.scale(0.1,Direction.UP),Physics.scale(-0.1,Direction.UP));
-			planetList.add(i, planet);
+			Planet planet = new Planet(
+					mass, 
+					radius, 
+					x, 
+					y,
+					Physics.scale(0.1,Direction.UP),
+					Physics.scale(-0.1,Direction.UP)
+					);
+			planetList.add(planet);
 		}
-		//create a large "Sun" planet (for demo purposes)
-		double x = Physics.scale(r.nextInt(900),Direction.UP);
-		double y = Physics.scale(r.nextInt(900),Direction.UP);
-		double radius = 6*pow(10,9);
+		
+		// Create a large "Sun" planet (for demo purposes)
+		// double x = Physics.scale(r.nextInt(900), Direction.UP);
+		// double y = Physics.scale(r.nextInt(900), Direction.UP);
+		double x = Physics.scale(810, Direction.UP);
+		double y = Physics.scale(540, Direction.UP);
+		double radius = 6*pow(10, 9);
 		double mass = Physics.mass(2000, radius);
-		Planet Sun = new Planet(mass, radius, x, y,0,0);
-		planetList.add(0,Sun);
+		Planet sun = new Planet(mass, radius, x, y, 0, 0);
+		sun.canMove = false;
+		planetList.add(0, sun);
 		
 	}
 	
