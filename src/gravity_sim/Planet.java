@@ -1,5 +1,7 @@
 package gravity_sim;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Planet {
@@ -7,7 +9,9 @@ public class Planet {
 	public static int planetCount = 0;
 	private double mass, radius;
 	private double Vx, Vy, x, y;
-	public boolean canMove = true;
+	private boolean canMove = true;
+	private Color colour = Color.BLACK;
+	private boolean isFilled = false;
 	
 	public Planet(double mass, double radius, double x, double y, double Vx, double Vy) {
 		this.mass = mass;
@@ -17,6 +21,18 @@ public class Planet {
 		this.Vx = Vx;
 		this.Vy = Vy;
 		Planet.planetCount++;
+	}
+	
+	public void setMovement(boolean m) {
+		this.canMove = m;
+	}
+	
+	public void setColour(Color c) {
+		this.colour = c;
+	}
+	
+	public void setFilled(boolean f) {
+		this.isFilled  = f;
 	}
 	
 	@Override
@@ -118,6 +134,27 @@ public class Planet {
 		double d = this.getDistance(p);
 		return Physics.force(M, m, d);
 	}
+
+	public void draw(Graphics g) {
+		g.setColor(this.colour);
+		int radius = (int) PlanetPhysics.scaleToPixel(this.getRadius());
+		double position[] = this.getPos();
+		if (this.isFilled) {
+			g.fillOval(
+					(int) PlanetPhysics.scaleToPixel(position[0]) - radius, 
+					(int) PlanetPhysics.scaleToPixel(position[1]) - radius, 
+					2 * radius, 
+					2 * radius
+					);
+		} else {
+			g.drawOval(
+					(int) PlanetPhysics.scaleToPixel(position[0]) - radius, 
+					(int) PlanetPhysics.scaleToPixel(position[1]) - radius, 
+					2 * radius, 
+					2 * radius
+					);
+		}
+	}
 	
 	/*
 	 * Checks if this planet has collided with another, given, planet
@@ -192,9 +229,9 @@ public class Planet {
 				resultantforceY += yforce;
 			}
 		}
-		double resultantAccX = resultantforceX/this.mass;	//calculates distance and moves planet accordingly
-		double resultantAccY = resultantforceY/this.mass;
-		double time = 1;	//time over which the acceleration is applied
+		double resultantAccX = resultantforceX / this.mass;  //calculates distance and moves planet accordingly
+		double resultantAccY = resultantforceY / this.mass;
+		double time = 1;  // Time over which the acceleration is applied (s)
 		double displacementX = (this.Vx*time) + (0.5*resultantAccX*Math.pow(time, 2.0));
 		double displacementY = (this.Vy*time) + (0.5*resultantAccY*Math.pow(time, 2.0));
 		this.Vx=this.Vx+(resultantAccX*time);

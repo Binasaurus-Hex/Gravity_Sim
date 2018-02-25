@@ -1,6 +1,7 @@
 package gravity_sim;
 
 import java.awt.Color;
+import java.util.Random;
 
 public class PlanetBuilder {
 	
@@ -11,10 +12,25 @@ public class PlanetBuilder {
 	public double y = 0; 
 	public double Vx = 0;
 	public double Vy = 0;
-	private boolean canMove = true;
+	public boolean canMove = true;
+	public boolean isFilled = false;
 	
 	public PlanetBuilder withColor(Color c) {
 		this.colour = c;
+		return this;
+	}
+	
+	public PlanetBuilder withColour(Color c) {
+		this.colour = c;
+		return this;
+	}
+	
+	public PlanetBuilder withRandomColour() {
+		Random rand = new Random();
+		float r = rand.nextFloat();
+		float g = rand.nextFloat();
+		float b = rand.nextFloat();
+		this.colour = new Color(r, g, b);
 		return this;
 	}
 	
@@ -57,6 +73,11 @@ public class PlanetBuilder {
 		return this;
 	}
 	
+	public PlanetBuilder withFill(boolean f) {
+		this.isFilled = f;
+		return this;
+	}
+	
 	public Planet build() {
 		Planet p = new Planet(
 				this.mass,
@@ -66,7 +87,9 @@ public class PlanetBuilder {
 				this.Vx,
 				this.Vy
 				);
-		p.canMove = this.canMove ;
+		p.setMovement(this.canMove);
+		p.setColour(this.colour);
+		p.setFilled(this.isFilled);
 		return p;
 	}
 }

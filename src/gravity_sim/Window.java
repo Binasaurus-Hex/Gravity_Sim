@@ -15,6 +15,7 @@ public class Window extends JComponent {
 	public static CopyOnWriteArrayList<Planet> planetList = new CopyOnWriteArrayList<Planet>();
 	public static CopyOnWriteArrayList<Point> planetTrails = new CopyOnWriteArrayList<Point>();
 	public static int[] windowSize = {1920, 1080};
+	public static final int TICK_TIME = 1;  // ms per tick
 	
 	public static void main(String[] a) throws InterruptedException {
 		
@@ -46,7 +47,7 @@ public class Window extends JComponent {
 		
 		// Main loop of program
 		while (true) {
-			Thread.sleep(1);  // 1ms per tick
+			Thread.sleep(Window.TICK_TIME);  // ms per tick
 			for (Planet p : planetList) {
 				p.move(planetList);
 				
@@ -62,7 +63,7 @@ public class Window extends JComponent {
 	 * Generate each of the planets
 	 */
 	public Window() {
-		int planetNumber = 100;
+		int planetNumber = 50;
 		Random r = new Random();
 		for (int i = 0; i < planetNumber; i++) {
 			
@@ -81,6 +82,8 @@ public class Window extends JComponent {
 					.withRadius(radius)
 					.withScaledLocation(r.nextInt(windowSize[0]), r.nextInt(windowSize[1]))
 					.withScaledVelocity(0.1, -0.1)
+					.withRandomColour()
+					.withFill(true)
 					.build();
 			planetList.add(planet);
 		}
@@ -93,6 +96,8 @@ public class Window extends JComponent {
 				.withMass(mass)
 				.withScaledLocation(810, 540)
 				.withMovement(false)
+				.withColour(Color.YELLOW)
+				.withFill(true)
 				.build();
 		planetList.add(0, sun);
 		
@@ -118,15 +123,8 @@ public class Window extends JComponent {
 		}
 		
 		// Paint each planet into existence
-		for(Planet p: planetList){
-			g.setColor(Color.BLACK);
-			int radius = (int) PlanetPhysics.scaleToPixel(p.getRadius());
-			double position[] = p.getPos();
-			g.drawOval(
-					(int) PlanetPhysics.scaleToPixel(position[0]) - radius, 
-					(int) PlanetPhysics.scaleToPixel(position[1]) - radius, 
-					2*radius, 
-					2*radius
+		for(Planet p: planetList) {
+			p.draw(g);
 			
 			// Add planet trail
 			double[] position = p.getPos();
