@@ -1,13 +1,15 @@
 package gravity_sim;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.*;
 import static java.lang.Math.*;
 public class Window extends JComponent {
 	
 	private static final long serialVersionUID = 1L;
-	public final Planet[] PlanetArray = new Planet[500];
+	public static CopyOnWriteArrayList<Planet> planetList = new CopyOnWriteArrayList<Planet>();
 	
 	public static void main(String[] a) throws InterruptedException {
 		
@@ -22,8 +24,12 @@ public class Window extends JComponent {
 		// Main loop of program
 		while (true) {
 			Thread.sleep(1);  // 1ms per tick
-			for (Planet p : animation.PlanetArray) {
-				p.move(animation.PlanetArray);
+			for (Planet p : planetList) {
+				p.move(planetList);
+				
+			}
+			for (Planet p: planetList){
+				p.collision(planetList);
 			}
 			f.repaint();
 		}
@@ -33,11 +39,11 @@ public class Window extends JComponent {
 	 * Generate each of the planets
 	 */
 	public Window() {
-		
+		int planetNumber=30;
 		Random r = new Random();
-		for (int i = 0; i < PlanetArray.length; i++) {
+		for (int i = 0; i < planetNumber; i++) {
 			
-			// Generate coords
+			// Generate coordinates for smaller planets
 			double x = Physics.scale(r.nextInt(1920),Direction.UP);
 			double y = Physics.scale(r.nextInt(1080),Direction.UP);
 			double density= 2000;
@@ -49,14 +55,16 @@ public class Window extends JComponent {
 			double mass = Physics.mass(density, radius);
 			
 			// Create each planet and add to array
-			PlanetArray[i] = new Planet(mass, radius, x, y,Physics.scale(0.1,Direction.UP),Physics.scale(-0.1,Direction.UP));
+			Planet planet = new Planet(mass, radius, x, y,Physics.scale(0.1,Direction.UP),Physics.scale(-0.1,Direction.UP));
+			planetList.add(i, planet);
 		}
+		//create a large "Sun" planet (for demo purposes)
 		double x = Physics.scale(r.nextInt(900),Direction.UP);
 		double y = Physics.scale(r.nextInt(900),Direction.UP);
 		double radius = 6*pow(10,9);
 		double mass = Physics.mass(2000, radius);
 		Planet Sun = new Planet(mass, radius, x, y,0,0);
-		PlanetArray[0]=Sun;
+		planetList.add(0,Sun);
 		
 	}
 	
@@ -67,7 +75,7 @@ public class Window extends JComponent {
 		
 		// Paint each planet
 		g.setColor(Color.blue);
-		for(Planet p: PlanetArray){
+		for(Planet p: planetList){
 			g.setColor(Color.BLACK);
 			int radius = (int) Physics.scale(p.getRadius(),Direction.DOWN);
 			double position[] = p.getPos();
