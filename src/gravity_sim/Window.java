@@ -45,40 +45,34 @@ public class Window extends JComponent {
 		Random r = new Random();
 		for (int i = 0; i < planetNumber; i++) {
 			
-			// Generate coordinates for smaller planets
-			double x = PlanetPhysics.scaleToReal(r.nextInt(windowSize[0]));
-			double y = PlanetPhysics.scaleToReal(r.nextInt(windowSize[1]));
-			double density = 2000;
-			
 			// Generate radius
 			double rangeMin = 2 * pow(10, 6);
 			double rangeMax = 7 * pow(10, 8);
 			double radius = rangeMin + ((rangeMax - rangeMin) * r.nextDouble());
 			
 			// Generate mass
+			double density = 2000;
 			double mass = Physics.mass(density, radius);
 			
 			// Create each planet and add to array
-			Planet planet = new Planet(
-					mass, 
-					radius, 
-					x, 
-					y,
-					PlanetPhysics.scaleToReal(0.1),
-					PlanetPhysics.scaleToReal(-0.1)
-					);
+			Planet planet = new PlanetBuilder()
+					.withMass(mass)
+					.withRadius(radius)
+					.withScaledLocation(r.nextInt(windowSize[0]), r.nextInt(windowSize[1]))
+					.withScaledVelocity(0.1, -0.1)
+					.build();
 			planetList.add(planet);
 		}
 		
 		// Create a large "Sun" planet (for demo purposes)
-		// double x = Physics.scale(r.nextInt(900), Direction.UP);
-		// double y = Physics.scale(r.nextInt(900), Direction.UP);
-		double x = PlanetPhysics.scaleToReal(810);
-		double y = PlanetPhysics.scaleToReal(540);
 		double radius = 6 * pow(10, 9);
 		double mass = Physics.mass(2000, radius);
-		Planet sun = new Planet(mass, radius, x, y, 0, 0);
-		sun.canMove = false;
+		Planet sun = new PlanetBuilder()
+				.withRadius(radius)
+				.withMass(mass)
+				.withScaledLocation(810, 540)
+				.withMovement(false)
+				.build();
 		planetList.add(0, sun);
 		
 	}
@@ -89,7 +83,6 @@ public class Window extends JComponent {
 	public void paintComponent(Graphics g){
 		
 		// Paint each planet into existence
-		g.setColor(Color.blue);
 		for(Planet p: planetList){
 			g.setColor(Color.BLACK);
 			int radius = (int) PlanetPhysics.scaleToPixel(p.getRadius());

@@ -6,7 +6,7 @@ public class Planet {
 	
 	public static int planetCount = 0;
 	private double mass, radius;
-	private double Vx,Vy,x,y;
+	private double Vx, Vy, x, y;
 	public boolean canMove = true;
 	
 	public Planet(double mass, double radius, double x, double y, double Vx, double Vy) {
