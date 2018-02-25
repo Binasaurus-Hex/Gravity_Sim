@@ -3,11 +3,11 @@ package gravity_sim;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Planet {
+	
 	public static int planetCount = 0;
 	private double mass, radius;
 	private double Vx,Vy,x,y;
 	public boolean canMove = true;
-	
 	
 	public Planet(double mass, double radius, double x, double y, double Vx, double Vy) {
 		this.mass = mass;
@@ -76,7 +76,7 @@ public class Planet {
 	/*
 	 * Says which direction the planet is moving in
 	 */
-	private int direction(double x1, double x2){
+	public int direction(double x1, double x2){
 		int xdir = -1;
 		if(x2 > x1){
 			xdir = 1;
@@ -87,7 +87,7 @@ public class Planet {
 	/*
 	 * Gets the distance between this and another planet
 	 */
-	private double getDistance(Planet p) {
+	public double getDistance(Planet p) {
 		double[] aC = this.getPos();
 		double[] bC = p.getPos();
 		return Physics.distance(aC[0], aC[1], bC[0], bC[1]);
@@ -96,7 +96,7 @@ public class Planet {
 	/*
 	 * Gets the angle between this and another planet (rads)
 	 */
-	private double getAngle(Planet p) {
+	public double getAngle(Planet p) {
 		double[] bC = p.getPos();
 		return Physics.angle(this.x, this.y, bC[0], bC[1]);
 	}
@@ -104,7 +104,7 @@ public class Planet {
 	/*
 	 * Gets the gravitational force between this and another planet
 	 */
-	private double getForce(Planet p) {
+	public double getForce(Planet p) {
 		return Physics.force(this.mass, p.mass, this.getDistance(p));
 	}
 	
