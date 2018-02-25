@@ -52,30 +52,19 @@ public class Physics {
 	 */
 	public static double scale(double value, Direction direction) {
 		if(direction==Direction.UP) {
-			return value*scalar;
+			return value * scalar;
 			
 		}
-		if(direction==Direction.DOWN) {
-			return value/scalar;
-		}
 		else {
-			return (Double) null;
+			return value / scalar;
 		}
 	}
 	/*
 	 * checks if two circles are intersecting
-	 * returns true if they are false if they arn't
+	 * returns true if they are intersecting
 	 */
 	public static boolean intersectCircle(double x1,double y1,double r1,double x2,double y2,double r2){
-		double distance =distance(x1,y1,x2,y2);
-		double diff = Math.abs(r2-r1);
-		double add  = Math.abs(r2+r1);
-		if((distance>=diff)&&(distance<=add)){
-			return true;
-		}
-		else{
-			return false;
-		}
+		return distance(x1, y1, x2, y2) < r1 + r2;
 	}
 	
 	public static double[] midpoint(double x1,double y1,double x2,double y2){

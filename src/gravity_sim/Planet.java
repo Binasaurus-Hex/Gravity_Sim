@@ -108,9 +108,7 @@ public class Planet {
 	 */
 	public void collision(CopyOnWriteArrayList<Planet> planetList){
 		for(Planet p: planetList){
-			System.out.println("starting");
 			if(p != this){
-				System.out.println("planet");
 				double[] bC = p.getPos();
 				double bR = p.getRadius();
 				if(Physics.intersectCircle(this.x, this.y,this.radius,bC[0],bC[1],bR)){
@@ -133,7 +131,6 @@ public class Planet {
 	 * moves the current planet
 	 */
 	public void move(CopyOnWriteArrayList<Planet> planetList) {
-		System.out.println();
 		double resultantforceX = 0;
 		double resultantforceY = 0;
 		for(Planet p: planetList){	//iterate through the other planets
