@@ -37,10 +37,11 @@ public class Planet {
 	
 	@Override
 	public String toString() {
-		return String.format("Planet[x=%.2f, y=%.2f, r=%.2f]",
-				this.x,
-				this.y,
-				this.radius);
+		String string = "Planet : position:"+
+				" x = "+PlanetPhysics.scaleToPixel(this.x)+
+				" y = "+PlanetPhysics.scaleToPixel(this.y)+
+				" radius = "+PlanetPhysics.scaleToPixel(this.radius);
+		return string;
 	}
 	
 	/*
@@ -179,30 +180,30 @@ public class Planet {
 				if (this.hasCollided(p)) {
 					if (this.radius > p.getRadius()){
 						// Combine the mass of this and the collided planet
-						double combinedMass = this.mass + p.getMass();
-						this.mass = combinedMass;
-						
-						// Increase radius slightly?
-						// pass
-						
-						// Combine the velocities
+						double combinedRadius=PlanetPhysics.combinedSize(this.radius,p.getRadius());
+						double aM = this.getMass();
+						double bM = p.getMass();
+						double combinedMass = aM+bM;
 						double[] aV = this.getVelocity();
 						double[] bV = p.getVelocity();
-						double combinedVelX = aV[0] + bV[0];
-						double combinedVelY = aV[1] + bV[1];
-						this.Vx = combinedVelX;
-						this.Vy = combinedVelY;
-						
+						double aMomentumX = aM*aV[0];
+						double aMomentumY = aM*aV[1];
+						double bMomentumX = bM*bV[0];
+						double bMomentumY = bM*bV[1];
+						double resultantMomentumX = aMomentumX+bMomentumX;
+						double resultantMomentumY = aMomentumY+bMomentumY;
+						double resultantVelX = resultantMomentumX/combinedMass;
+						double resultantVelY = resultantMomentumY/combinedMass;
+						this.Vx=resultantVelX;
+						this.Vy=resultantVelY;
+						this.radius=combinedRadius;
+						this.mass=combinedMass;
 						// Remove the other planet from the list
 						planetList.remove(p);
 						
 						// Print out that the planet has been destroyed
-						System.out.print(p);
-						System.out.print(" : Remaining ");
 						Planet.planetCount--;
-						System.out.println(Planet.planetCount);
 						
-						return; // Since it can only collide with something once before it stops existing
 					}
 				}
 			}

@@ -88,6 +88,16 @@ public class Physics {
 		double[] midpoint = {midx, midy};
 		return midpoint;
 	}
+	
+	/*
+	 * gets the area of the circle
+	 * @param radius
+	 * @return area
+	 */
+	public static double circleArea(double radius){
+		double area = Math.PI*pow(radius,2);
+		return area;
+	}
 }
 
 

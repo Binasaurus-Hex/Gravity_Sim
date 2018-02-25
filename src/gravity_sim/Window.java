@@ -9,7 +9,7 @@ import javax.swing.*;
 import static java.lang.Math.*;
 
 public class Window extends JComponent {
-	
+	public static boolean planetTrailToggle = true;
 	private static final long serialVersionUID = 1L; 
 	
 	public static CopyOnWriteArrayList<Planet> planetList = new CopyOnWriteArrayList<Planet>();
@@ -22,17 +22,16 @@ public class Window extends JComponent {
 		// Create a new window
 		Window animation = new Window();
 		JFrame f = new JFrame("Planet Sim");
-		f.setSize(windowSize[0], windowSize[1]);  // Window size
+		f.getContentPane().setBackground( Color.black );
+		f.setSize(windowSize[0], windowSize[1]);	// Window size
 		f.add(animation);
 		f.setVisible(true);
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
 	    f.addKeyListener(new KeyListener() {
 	        @Override
-	        public void keyPressed(KeyEvent e) {
-	            if (e.getKeyCode() == 82) {
-	            	// "r" key pressed
-	            	planetTrails.clear();
+	        public void keyPressed(KeyEvent e){
+	            if(e.getKeyCode()== 84){
+	            	planetTrailToggle = !planetTrailToggle;
 	            }
 	        }
 
@@ -44,7 +43,6 @@ public class Window extends JComponent {
 			public void keyTyped(KeyEvent arg0) {
 			}
 	    });
-		
 		// Main loop of program
 		while (true) {
 			Thread.sleep(Window.TICK_TIME);  // ms per tick
@@ -63,31 +61,33 @@ public class Window extends JComponent {
 	 * Generate each of the planets
 	 */
 	public Window() {
-		int planetNumber = 50;
+		int planetNumber = 100;
 		Random r = new Random();
 		for (int i = 0; i < planetNumber; i++) {
 			
 			// Generate radius
-			double rangeMin = 2 * pow(10, 6);
-			double rangeMax = 7 * pow(10, 8);
+			double rangeMin = 1 * pow(10, 7);
+			double rangeMax = 3 * pow(10, 8);
 			double radius = rangeMin + ((rangeMax - rangeMin) * r.nextDouble());
 			
+			double Vx = 0.5*(r.nextDouble()-0.5);
+			double Vy = 0.5*(r.nextDouble()-0.5);
 			// Generate mass
 			double density = 2000;
 			double mass = Physics.mass(density, radius);
 			
 			// Create each planet and add to array
 			Planet planet = new PlanetBuilder()
+					
 					.withMass(mass)
 					.withRadius(radius)
 					.withScaledLocation(r.nextInt(windowSize[0]), r.nextInt(windowSize[1]))
-					.withScaledVelocity(0.1, -0.1)
+					.withScaledVelocity(Vx,Vy)
 					.withRandomColour()
 					.withFill(true)
 					.build();
 			planetList.add(planet);
 		}
-		
 		// Create a large "Sun" planet (for demo purposes)
 		double radius = 6 * pow(10, 9);
 		double mass = Physics.mass(2000, radius);
@@ -101,15 +101,17 @@ public class Window extends JComponent {
 				.build();
 		planetList.add(0, sun);
 		
+		
 	}
 	
 	/*
 	 * Paint the planets onto the screen
 	 */
+	
+	
 	public void paintComponent(Graphics g) {
-		
 		// Paint the trails into existence
-		g.setColor(Color.BLACK);
+		g.setColor(Color.white);
 		for(Point t: planetTrails) {
 			g.fillOval(
 					t.x, 
@@ -118,8 +120,8 @@ public class Window extends JComponent {
 					2
 					);
 		}
-		while (planetTrails.size() > 50000) {
-			planetTrails.remove(0);
+		if(planetTrailToggle) {
+			planetTrails.clear();
 		}
 		
 		// Paint each planet into existence
