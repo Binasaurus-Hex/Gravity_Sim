@@ -1,63 +1,93 @@
 package gravity_sim;
+
 import static java.lang.Math.*;
+
 public class Physics {
 	
-	private static double G = 6.67 * pow(10,-11);
-	private static double scalar= 2 * pow(10,7);
+	// Newton's Gravitational Constant
+	private static final double G = 6.67 * pow(10,-11);
+	
 	/*
-	 * Get the gravitational force between two planets
-	 * @param M Planet 1's mass
-	 * @param m Planet 2's mass
-	 * @param r Distance between the two planets 
-	 * @return The gravitational force between two planets
+	 * Get the gravitational force between two objects
+	 * F = (G * m1 * m2) / (r * r), with r being the distance between the two objects
+	 * @param M The first mass
+	 * @param m The second mass
+	 * @param r The distance between the center point of the two masses 
+	 * @return The gravitational force between the objects
 	 */
 	public static double force(double M, double m, double r){
-		double force = (G*M*m)/pow(r,2);
-		return force;
+		return (G * M * m) / pow(r, 2);
 	}
 
 	/*
-	 * The distance between the two coordinates
+	 * Get the distance between two points
+	 * @param x1
+	 * @param y1
+	 * @param x2
+	 * @param y2
+	 * @return The distance between the two points
 	 */
 	public static double distance(double x1, double y1, double x2, double y2){
-		double dx = x2-x1;
-		double dy = y2-y1;
-		double d = sqrt(pow(dx,2)+pow(dy,2));
-		return d;
+		double dx = x2 - x1;
+		double dy = y2 - y1;
+		return sqrt((dx * dx) + (dy * dy));
 	}
 	
 	/*
-	 * Gets the angle between the two planets
+	 * Gets the angle between the two points
+	 * @param x1
+	 * @param y1
+	 * @param x2
+	 * @param y2
+	 * @return The angle between the two points
 	 */
-	public static double angle(double x1,double y1,double x2,double y2){
-		double dx = abs(x2-x1);
-		double dy = abs(y2-y1);
-		double angle = Math.atan(dy/dx);
-		return angle;
+	public static double angle(double x1, double y1, double x2, double y2){
+		double dx = abs(x2 - x1);
+		double dy = abs(y2 - y1);
+		return Math.atan(dy / dx);
 		
 	}
 	
 	/*
-	 * Gives you the mass of a planet
+	 * Gives you the mass of a spherical object, given its density and radius
+	 * @param density
+	 * @param radius
+	 * @return The mass of the object
 	 */
 	public static double mass(double density, double radius){
-		double volume = (4/3)*PI*pow(radius,3);
-		double mass = density*volume;
-		return mass;
+		double volume = (4 / 3) * Math.PI * pow(radius, 3);
+		return density * volume;
 	}
 	
-	public static double scale(double value, Direction direction) {
-		if(direction==Direction.UP) {
-			return value*scalar;
-			
-		}
-		if(direction==Direction.DOWN) {
-			return value/scalar;
-		}
-		else {
-			return (Double) null;
-		}
-	}	
+	/*
+	 * Checks if two circles are intersecting, or INSIDE one another
+	 * Returns true if they are intersecting
+	 * @param x1
+	 * @param y1
+	 * @param r1
+	 * @param x2
+	 * @param y2
+	 * @param r2
+	 * @return Whether or not the two circles would be intersecting
+	 */
+	public static boolean intersectCircle(double x1, double y1, double r1, double x2, double y2, double r2){
+		return distance(x1, y1, x2, y2) < r1 + r2;
+	}
+	
+	/*
+	 * Gets the midpoint of two coordinates
+	 * @param x1
+	 * @param y1
+	 * @param x2
+	 * @param y2
+	 * @return The coordinate of the midpoint
+	 */
+	public static double[] midpoint(double x1, double y1, double x2, double y2){
+		double midx = (x2 + x1) / 2;
+		double midy = (y2 + y1) / 2;
+		double[] midpoint = {midx, midy};
+		return midpoint;
+	}
 }
 
 
