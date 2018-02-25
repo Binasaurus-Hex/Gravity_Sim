@@ -1,18 +1,13 @@
 package gravity_sim;
 
-import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Planet {
+	public static int planetCount = 0;
 	private double mass, radius;
 	private double Vx,Vy,x,y;
 	public boolean canMove = true;
 	
-	
-	public Planet(double mass,double radius){
-		this.mass = mass;
-		this.radius = radius;
-	}
 	
 	public Planet(double mass, double radius, double x, double y, double Vx, double Vy) {
 		this.mass = mass;
@@ -21,6 +16,15 @@ public class Planet {
 		this.y = y;
 		this.Vx = Vx;
 		this.Vy = Vy;
+		Planet.planetCount++;
+	}
+	
+	@Override
+	public String toString() {
+		return String.format("Planet<x=%.2f, y=%.2f, r=%.2f>",
+				this.x,
+				this.y,
+				this.radius);
 	}
 	
 	/*
@@ -105,16 +109,16 @@ public class Planet {
 	}
 	
 	/*
-	 * checks if the current planet is colliding with the inputed planet
+	 * Checks if the current planet is colliding with the inputed planet
 	 */
 	public void collision(CopyOnWriteArrayList<Planet> planetList){
 		for(Planet p: planetList){
 			if(p != this){
 				double[] bC = p.getPos();
 				double bR = p.getRadius();
-				if(Physics.intersectCircle(this.x, this.y,this.radius,bC[0],bC[1],bR)){
-					if(this.radius>p.getRadius()){
-						double combinedMass=this.mass+p.getMass();
+				if(Physics.intersectCircle(this.x, this.y, this.radius, bC[0], bC[1], bR)){
+					if(this.radius > p.getRadius()){
+						double combinedMass = this.mass + p.getMass();
 						double[] aV =this.getVel();
 						double[] bV =p.getVel();
 						double combinedVelX = aV[0]+bV[0];
@@ -123,16 +127,23 @@ public class Planet {
 						this.Vx=combinedVelX;
 						this.Vy=combinedVelY;
 						planetList.remove(p);
+						
+						System.out.print(p);
+						System.out.print(" : Remaining ");
+						Planet.planetCount--;
+						System.out.println(Planet.planetCount);
 					}
 				}
 			}
 		}
 	}
+	
 	/*
 	 * Moves the current planet
 	 */
 	public void move(CopyOnWriteArrayList<Planet> planetList) {
 		if (!this.canMove) return;
+
 		double resultantforceX = 0;
 		double resultantforceY = 0;
 		for(Planet p: planetList){	//iterate through the other planets
