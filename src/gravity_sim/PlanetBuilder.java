@@ -50,6 +50,7 @@ public class PlanetBuilder {
 		return this;
 	}
 	
+	
 	public PlanetBuilder withScaledLocation(double x, double y) {
 		this.x = PlanetPhysics.scaleToReal(x);
 		this.y = PlanetPhysics.scaleToReal(y);

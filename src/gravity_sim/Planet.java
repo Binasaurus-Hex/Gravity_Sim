@@ -94,17 +94,7 @@ public class Planet {
 		return this.mass;
 	}
 	
-	/*
-	 * Says which direction the planet is moving in
-	 * If 1, then it's moving positively (right, down)
-	 */
-	public int direction(double x1, double x2) {
-		int xdir = -1;
-		if(x2 > x1){
-			xdir = 1;
-		}
-		return xdir;
-	}
+	
 	
 	/*
 	 * Gets the distance between this and another planet
@@ -135,7 +125,7 @@ public class Planet {
 		double d = this.getDistance(p);
 		return Physics.force(M, m, d);
 	}
-
+	
 	public void draw(Graphics g) {
 		g.setColor(this.colour);
 		int radius = (int) PlanetPhysics.scaleToPixel(this.getRadius());
@@ -178,33 +168,9 @@ public class Planet {
 		for (Planet p: planetList){
 			if (p != this){
 				if (this.hasCollided(p)) {
-					if (this.radius > p.getRadius()){
-						// Combine the mass of this and the collided planet
-						double combinedRadius=PlanetPhysics.combinedSize(this.radius,p.getRadius());
-						double aM = this.getMass();
-						double bM = p.getMass();
-						double combinedMass = aM+bM;
-						double[] aV = this.getVelocity();
-						double[] bV = p.getVelocity();
-						double aMomentumX = aM*aV[0];
-						double aMomentumY = aM*aV[1];
-						double bMomentumX = bM*bV[0];
-						double bMomentumY = bM*bV[1];
-						double resultantMomentumX = aMomentumX+bMomentumX;
-						double resultantMomentumY = aMomentumY+bMomentumY;
-						double resultantVelX = resultantMomentumX/combinedMass;
-						double resultantVelY = resultantMomentumY/combinedMass;
-						this.Vx=resultantVelX;
-						this.Vy=resultantVelY;
-						this.radius=combinedRadius;
-						this.mass=combinedMass;
-						// Remove the other planet from the list
-						planetList.remove(p);
-						
-						// Print out that the planet has been destroyed
-						Planet.planetCount--;
-						
-					}
+					double[] aVelNew = PlanetPhysics.collidedVel(this, p);
+					this.setVel(aVelNew[0], aVelNew[1]);
+					
 				}
 			}
 		}
@@ -222,8 +188,8 @@ public class Planet {
 			if(p != this){
 				double angle = this.getAngle(p);	//calculates the x and y components of the resultant force
 				double force = this.getForce(p);
-				int xdir = direction(this.x, p.x);
-				int ydir = direction(this.y, p.y);
+				int xdir = PlanetPhysics.direction(this.x, p.x);
+				int ydir = PlanetPhysics.direction(this.y, p.y);
 				double xforce = xdir * force * Math.cos(angle);
 				double yforce = ydir * force * Math.sin(angle);
 				resultantforceX += xforce;

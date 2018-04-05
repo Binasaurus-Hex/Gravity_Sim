@@ -1,7 +1,9 @@
 package gravity_sim;
 
 import static java.lang.Math.*;
-
+/*
+ * a class for general Physics and Math functions
+ */
 public class Physics {
 	
 	// Newton's Gravitational Constant
@@ -12,7 +14,7 @@ public class Physics {
 	 * F = (G * m1 * m2) / (r * r), with r being the distance between the two objects
 	 * @param M The first mass
 	 * @param m The second mass
-	 * @param r The distance between the center point of the two masses 
+	 * @param r The distance between the centre point of the two masses 
 	 * @return The gravitational force between the objects
 	 */
 	public static double force(double M, double m, double r){
@@ -31,6 +33,51 @@ public class Physics {
 		double dx = x2 - x1;
 		double dy = y2 - y1;
 		return sqrt((dx * dx) + (dy * dy));
+	}
+	/*
+	 * gets the length of a line (x and y)
+	 * @param x
+	 * @param y
+	 * @returns length
+	 */
+	public static double length(double x, double y){
+		double length = sqrt((x*x) +(y*y));
+		return length;
+		
+	}
+	/*
+	 *gets the dot product of the two 2d vectors inputed
+	 *@param vector1
+	 *@param vector2
+	 *@returns product
+	 */
+	public static double dotProduct2D(double[] vector1,double[] vector2){
+		double product = (vector1[0]*vector2[0])+(vector1[1]*vector2[1]);
+		return product;
+	}
+	
+	/*
+	 * adds the two inputed vectors together
+	 */
+	public static double[] vectorAdd(double[] vector1, double[] vector2){
+		double[] added ={(vector1[0]+vector2[0]),(vector1[1]+vector1[1])};
+		return added;
+	}
+	
+	/*
+	 *Subtracts the two inputed vectors 
+	 */
+	public static double[] vectorSubtract(double[] vector1, double[] vector2){
+		double[] subracted = vectorAdd(vector1,vectorScale(vector2,-1));
+		return subracted;
+	}
+	
+	/*
+	 * multiplies the inputed vector by the scaler quantity
+	 */
+	public static double[] vectorScale(double[] vector1, double scalar){
+		double[] scaled ={(vector1[0]*scalar),(vector1[1]*scalar)};
+		return scaled;
 	}
 	
 	/*

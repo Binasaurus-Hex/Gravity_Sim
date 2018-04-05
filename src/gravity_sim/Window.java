@@ -48,7 +48,6 @@ public class Window extends JComponent {
 			Thread.sleep(Window.TICK_TIME);  // ms per tick
 			for (Planet p : planetList) {
 				p.move(planetList);
-				
 			}
 			for (Planet p: planetList){
 				p.collisionChecker(planetList);
@@ -69,7 +68,7 @@ public class Window extends JComponent {
 			double rangeMin = 1 * pow(10, 7);
 			double rangeMax = 3 * pow(10, 8);
 			double radius = rangeMin + ((rangeMax - rangeMin) * r.nextDouble());
-			
+			// Generate the x and y velocities
 			double Vx = 0.5*(r.nextDouble()-0.5);
 			double Vy = 0.5*(r.nextDouble()-0.5);
 			// Generate mass
@@ -95,7 +94,7 @@ public class Window extends JComponent {
 				.withRadius(radius)
 				.withMass(mass)
 				.withScaledLocation(810, 540)
-				.withMovement(false)
+				.withMovement(true)
 				.withColour(Color.YELLOW)
 				.withFill(true)
 				.build();
@@ -127,7 +126,6 @@ public class Window extends JComponent {
 		// Paint each planet into existence
 		for(Planet p: planetList) {
 			p.draw(g);
-			
 			// Add planet trail
 			double[] position = p.getPos();
 			Point l = new Point();
