@@ -55,6 +55,13 @@ public class Planet {
 	}
 	
 	/*
+	 * Gets the position of the planet
+	 */
+	public double[] getPos(){
+		double[] pos= {x, y};
+		return pos;
+	}
+	/*
 	 * Set the velocity component of the planet
 	 * @param Vx
 	 * @param Vy
@@ -62,14 +69,6 @@ public class Planet {
 	public void setVel(double Vx,double Vy){
 		this.Vx = Vx;
 		this.Vy = Vy;
-	}
-	
-	/*
-	 * Gets the position of the planet
-	 */
-	public double[] getPos(){
-		double[] pos= {x, y};
-		return pos;
 	}
 	
 	/*
@@ -106,7 +105,7 @@ public class Planet {
 	}
 	
 	/*
-	 * Gets the angle between this and another planet (radians)
+	 * Gets the angle between this and another planet (rads)
 	 */
 	public double getAngle(Planet p) {
 		double[] aC = this.getPos();
@@ -125,7 +124,25 @@ public class Planet {
 		double d = this.getDistance(p);
 		return Physics.force(M, m, d);
 	}
-	
+	/*
+	 * returns a Box2D object of the planet
+	 * @returns box
+	 */
+	public Box2D toBox(){
+		int pixRadius = (int)Math.ceil(PlanetPhysics.scaleToPixel(radius));
+		int x = (int)Math.ceil(PlanetPhysics.scaleToPixel(this.x));
+		int y = (int)Math.ceil(PlanetPhysics.scaleToPixel(this.y));
+		int rowStart = y - pixRadius;
+		int rowEnd = y + pixRadius;
+		int columnStart = x - pixRadius;
+		int columnEnd = x + pixRadius;
+		Box2D box = new Box2D(rowStart,
+							  rowEnd,
+							  columnStart,
+							  columnEnd);
+		return box;
+		
+	}
 	public void draw(Graphics g) {
 		g.setColor(this.colour);
 		int radius = (int) PlanetPhysics.scaleToPixel(this.getRadius());
@@ -153,11 +170,11 @@ public class Planet {
 	 * @return Whether or not the two have collided
 	 */
 	public boolean hasCollided(Planet p) {
-		double[] aP = this.getPos();
-		double[] bP = p.getPos();
-		double aR = this.getRadius();
-		double bR = p.getRadius();
-		return Physics.intersectCircle(aP[0], aP[1], aR, bP[0], bP[1], bR);
+		double[] aPos = this.getPos();
+		double[] bPos = p.getPos();
+		double aRad = this.getRadius();
+		double bRad = p.getRadius();
+		return Physics.intersectCircle(aPos[0], aPos[1], aRad, bPos[0], bPos[1], bRad);
 	}
 	
 	/*

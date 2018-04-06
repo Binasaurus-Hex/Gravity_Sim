@@ -3,6 +3,7 @@ package gravity_sim;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.IOException;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.*;
@@ -17,7 +18,7 @@ public class Window extends JComponent {
 	public static int[] windowSize = {1920, 1080};
 	public static final int TICK_TIME = 1;  // ms per tick
 	
-	public static void main(String[] a) throws InterruptedException {
+	public static void main(String[] a) throws InterruptedException{
 		
 		// Create a new window
 		Window animation = new Window();
@@ -43,6 +44,7 @@ public class Window extends JComponent {
 			public void keyTyped(KeyEvent arg0) {
 			}
 	    });
+	    
 		// Main loop of program
 		while (true) {
 			Thread.sleep(Window.TICK_TIME);  // ms per tick
@@ -59,48 +61,8 @@ public class Window extends JComponent {
 	/*
 	 * Generate each of the planets
 	 */
-	public Window() {
-		int planetNumber = 100;
-		Random r = new Random();
-		for (int i = 0; i < planetNumber; i++) {
-			
-			// Generate radius
-			double rangeMin = 1 * pow(10, 7);
-			double rangeMax = 3 * pow(10, 8);
-			double radius = rangeMin + ((rangeMax - rangeMin) * r.nextDouble());
-			// Generate the x and y velocities
-			double Vx = 0.5*(r.nextDouble()-0.5);
-			double Vy = 0.5*(r.nextDouble()-0.5);
-			// Generate mass
-			double density = 2000;
-			double mass = Physics.mass(density, radius);
-			
-			// Create each planet and add to array
-			Planet planet = new PlanetBuilder()
-					
-					.withMass(mass)
-					.withRadius(radius)
-					.withScaledLocation(r.nextInt(windowSize[0]), r.nextInt(windowSize[1]))
-					.withScaledVelocity(Vx,Vy)
-					.withRandomColour()
-					.withFill(true)
-					.build();
-			planetList.add(planet);
-		}
-		// Create a large "Sun" planet (for demo purposes)
-		double radius = 6 * pow(10, 9);
-		double mass = Physics.mass(2000, radius);
-		Planet sun = new PlanetBuilder()
-				.withRadius(radius)
-				.withMass(mass)
-				.withScaledLocation(810, 540)
-				.withMovement(true)
-				.withColour(Color.YELLOW)
-				.withFill(true)
-				.build();
-		planetList.add(0, sun);
-		
-		
+	public Window(){
+		Spawner spawn = new Spawner(planetList,windowSize);
 	}
 	
 	/*
