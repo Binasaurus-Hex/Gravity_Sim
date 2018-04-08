@@ -2,6 +2,7 @@ package gravity_sim;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Planet {
@@ -143,19 +144,19 @@ public class Planet {
 		return box;
 		
 	}
-	public void draw(Graphics g) {
-		g.setColor(this.colour);
+	public void draw(Graphics2D g2) {
+		g2.setColor(this.colour);
 		int radius = (int) PlanetPhysics.scaleToPixel(this.getRadius());
 		double position[] = this.getPos();
 		if (this.isFilled) {
-			g.fillOval(
+			g2.fillOval(
 					(int) PlanetPhysics.scaleToPixel(position[0]) - radius, 
 					(int) PlanetPhysics.scaleToPixel(position[1]) - radius, 
 					2 * radius, 
 					2 * radius
 					);
 		} else {
-			g.drawOval(
+			g2.drawOval(
 					(int) PlanetPhysics.scaleToPixel(position[0]) - radius, 
 					(int) PlanetPhysics.scaleToPixel(position[1]) - radius, 
 					2 * radius, 
@@ -215,7 +216,7 @@ public class Planet {
 		}
 		double resultantAccX = resultantforceX / this.mass;  //calculates distance and moves planet accordingly
 		double resultantAccY = resultantforceY / this.mass;
-		double time = 1;  // Time over which the acceleration is applied (s)
+		double time = 100;  // Time over which the acceleration is applied (s)
 		double displacementX = (this.Vx*time) + (0.5*resultantAccX*Math.pow(time, 2.0));
 		double displacementY = (this.Vy*time) + (0.5*resultantAccY*Math.pow(time, 2.0));
 		this.Vx=this.Vx+(resultantAccX*time);
