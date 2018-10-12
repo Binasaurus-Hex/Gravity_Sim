@@ -60,7 +60,7 @@ public class Physics {
 	 * adds the two inputed vectors together
 	 */
 	public static double[] vectorAdd(double[] vector1, double[] vector2){
-		double[] added ={(vector1[0]+vector2[0]),(vector1[1]+vector1[1])};
+		double[] added ={(vector1[0]+vector2[0]),(vector1[1]+vector2[1])};
 		return added;
 	}
 	

@@ -21,133 +21,47 @@ public class Window extends JComponent {
 	
 	public static CopyOnWriteArrayList<Planet> planetList = new CopyOnWriteArrayList<Planet>();
 	public static CopyOnWriteArrayList<Point> planetTrails = new CopyOnWriteArrayList<Point>();
-	public static int[] windowSize = {1920, 1080};
+	public static int[] windowSize = {10000 , 10000};
 	public static final int TICK_TIME = 1;  // ms per tick
-	private static double zoomFactor = 1;
-	private static double prevZoomFactor = 1;
-	private static boolean zoomer = true;
-	private static boolean dragger;
-	private static boolean released;
-	private static double xOffset = 0;
-	private static double yOffset = 0;
-	private static int xDiff;
-	private static int yDiff;
-    private static Point startPoint;
+	public static double zoomFactor = 1;
+	public static double prevZoomFactor = 1;
+	public static boolean zoomer = true;
+	public static boolean dragger;
+	public static boolean released;
+	public static double xOffset = 0;
+	public static double yOffset = 0;
+	public static int xDiff;
+	public static int yDiff;
+    public static Point startPoint;
+    public static boolean centre = false;
+    public static JFrame f;
+    
 	
 	public static void main(String[] a) throws InterruptedException{
 		
 		// Create a new window
 		Window animation = new Window();
-		JFrame f = new JFrame("Planet Sim");
+		f = new JFrame("Planet Sim");
 		f.getContentPane().setBackground( Color.black );
 		f.setSize(windowSize[0], windowSize[1]);	// Window size
 		f.add(animation);
 		f.setVisible(true);
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	    f.addKeyListener(new KeyListener() {
-	        @Override
-	        public void keyPressed(KeyEvent e){
-	            if(e.getKeyCode()== 84){
-	            	planetTrailToggle = !planetTrailToggle;
-	            }
-	        }
-
-			@Override
-			public void keyReleased(KeyEvent arg0) {
-			}
-
-			@Override
-			public void keyTyped(KeyEvent arg0) {
-			}
-	    });
-	    f.addMouseWheelListener(new MouseWheelListener(){
-
-			@Override
-			public void mouseWheelMoved(MouseWheelEvent e) {
-				zoomer = true;
-
-		        //Zoom in
-		        if (e.getWheelRotation() < 0) {
-		            zoomFactor *= 1.1;
-		            f.repaint();
-		        }
-		        //Zoom out
-		        if (e.getWheelRotation() > 0) {
-		            zoomFactor /= 1.1;
-		            //f.repaint();
-		        }
-				
-			}
-	    	
-	    });
-	    f.addMouseMotionListener(new MouseMotionListener(){
-
-			@Override
-			public void mouseDragged(MouseEvent e) {
-				Point curPoint = e.getLocationOnScreen();
-		        xDiff = curPoint.x - startPoint.x;
-		        yDiff = curPoint.y - startPoint.y;
-		        dragger = true;
-		        f.repaint();
-		        
-				
-			}
-
-			@Override
-			public void mouseMoved(MouseEvent arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			
-	    	
-	    });
-	    f.addMouseListener(new MouseListener(){
-
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void mouseExited(MouseEvent arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void mousePressed(MouseEvent arg0) {
-				released = false;
-		        startPoint = MouseInfo.getPointerInfo().getLocation();
-				
-			}
-
-			@Override
-			public void mouseReleased(MouseEvent arg0) {
-				f.repaint();
-				released = true;
-				
-		        
-				
-			}
-	    	
-	    });
+	    f.addMouseMotionListener(new MouseInput());
+	    f.addMouseWheelListener(new MouseInput());
+	    f.addMouseListener(new MouseInput());
+	    
 	    
 		// Main loop of program
 		while (true) {
 			Thread.sleep(Window.TICK_TIME);  // ms per tick
-			for (Planet p : planetList) {
-				p.move(planetList);
-			}
 			for (Planet p: planetList){
 				p.collisionChecker(planetList);
 			}
+			for (Planet p : planetList) {
+				p.move(planetList);
+			}
+			
 			f.repaint();
 		}
 	}
@@ -166,6 +80,7 @@ public class Window extends JComponent {
 	
 	public void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D)g;
+		
 		
 		if (zoomer) {
 			AffineTransform at = new AffineTransform();
@@ -196,6 +111,19 @@ public class Window extends JComponent {
             }
 
         }
+		if(centre){
+			Planet p = planetList.get(0);
+			double[] pos = p.getPos();
+			double x = PlanetPhysics.scaleToPixel(pos[0]);
+			double y = PlanetPhysics.scaleToPixel(pos[1]);
+			Point point = getLocationOnScreen();
+			AffineTransform at = new AffineTransform();
+			System.out.println("x ="+point.getX());
+			System.out.println("y ="+point.getY());
+			g2.transform(at);
+			centre = false;
+			
+		}
 		
 		// Paint the trails into existence
 		
@@ -217,13 +145,7 @@ public class Window extends JComponent {
 		for(Planet p: planetList) {
 			p.draw(g2);
 			// Add planet trail
-			double[] position = p.getPos();
-			Point l = new Point();
-			l.setLocation(
-					PlanetPhysics.scaleToPixel(position[0]), 
-					PlanetPhysics.scaleToPixel(position[1])
-					);
-			
 		}
+		g2.dispose();
 	}
 }

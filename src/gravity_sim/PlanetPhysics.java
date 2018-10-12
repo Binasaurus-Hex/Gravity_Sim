@@ -8,7 +8,7 @@ public class PlanetPhysics {
 	
 	// The scalar for this project - 
 	// The difference between pixel measurements and "real" measurements
-	private static final double scalar = 2 * pow(10,7);
+	private static final double scalar = 2 * pow(10,6);
 	
 	/*
 	 * Scales a value from a "real" number to a modelled pixel measurement

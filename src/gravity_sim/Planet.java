@@ -142,8 +142,11 @@ public class Planet {
 							  columnStart,
 							  columnEnd);
 		return box;
-		
 	}
+	
+	/*
+	 * draws the planet onto the screen
+	 */
 	public void draw(Graphics2D g2) {
 		g2.setColor(this.colour);
 		int radius = (int) PlanetPhysics.scaleToPixel(this.getRadius());
@@ -187,12 +190,40 @@ public class Planet {
 			if (p != this){
 				if (this.hasCollided(p)) {
 					double[] aVelNew = PlanetPhysics.collidedVel(this, p);
+					double[] bVelNew = PlanetPhysics.collidedVel(p, this);
+					resolveCollision(p);
 					this.setVel(aVelNew[0], aVelNew[1]);
+					p.setVel(bVelNew[0], bVelNew[1]);
 					
 				}
 			}
 		}
 	}
+	
+	public void resolveCollision(Planet p){
+		double distance = (this.getRadius()+p.getRadius())-Physics.distance(this.getPos()[0], this.getPos()[1],p.getPos()[0], p.getPos()[1]);
+		double[] doubleArray = {(p.getPos()[0]-this.getPos()[0]), (p.getPos()[1]-this.getPos()[1])};
+		double phi = PlanetPhysics.vectorAngle(doubleArray);
+		double xDistance = distance*Math.cos(phi)*-1;
+		double yDistance = distance*Math.sin(phi)*-1;
+		if(this.canMove){
+			this.x = (this.x+xDistance);
+			this.y = (this.y+yDistance);
+		}
+		else{
+			p.x = (p.x+xDistance);
+			p.y = (p.y+yDistance);
+		}
+		
+		
+		
+		
+		
+	}
+	
+	
+	
+	
 	
 	/*
 	 * Moves the current planet, should be run once a tick
@@ -216,7 +247,7 @@ public class Planet {
 		}
 		double resultantAccX = resultantforceX / this.mass;  //calculates distance and moves planet accordingly
 		double resultantAccY = resultantforceY / this.mass;
-		double time = 100;  // Time over which the acceleration is applied (s)
+		double time = 20;  // Time over which the acceleration is applied (s)
 		double displacementX = (this.Vx*time) + (0.5*resultantAccX*Math.pow(time, 2.0));
 		double displacementY = (this.Vy*time) + (0.5*resultantAccY*Math.pow(time, 2.0));
 		this.Vx=this.Vx+(resultantAccX*time);

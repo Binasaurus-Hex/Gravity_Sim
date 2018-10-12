@@ -12,33 +12,33 @@ public class Spawner {
 	
 	public Spawner(CopyOnWriteArrayList<Planet> planetList,int[] windowSize){
 		Box2D window = new Box2D(0,windowSize[1],0,windowSize[0]);
-		int planetNumber = 300;
+		int planetNumber = 200;
 		Random r = new Random();
 		
 		// Create a large "Sun" planet (for demo purposes)
-		double sunRadius = 6 * pow(10, 9);
+		double sunRadius = 1.3 * pow(10, 9);
 		double sunMass = Physics.mass(2000, sunRadius);
 		Planet sun = new PlanetBuilder()
 				.withRadius(sunRadius)
-				.withMass(sunMass)
+				.withMass(sunMass*10)
 				.withColour(Color.YELLOW)
 				.withFill(true)
+				.withRawVelocity(1,1)
+				.withMovement(false)
 				.build();
 		
 		//attempt to spawn the sun
-		if(spawnStatic(window,sun,810,540)){
-			planetList.add(sun);
-		}
-		else{
-			System.out.println("error : not enough space");
-		}
+		spawnRandom(window,sun);
+		planetList.add(sun);
+		
+		
 				
 		//create and add the specified number of random planets		
 		for (int i = 0; i < planetNumber; i++) {
 			
 			// Generate radius
-			double rangeMin = 1 * pow(10, 7);
-			double rangeMax = 3 * pow(10, 8);
+			double rangeMin = 1.7 * pow(10, 6);
+			double rangeMax = 6 * pow(10, 7);
 			double radius = rangeMin + ((rangeMax - rangeMin) * r.nextDouble());
 			// Generate the x and y velocities
 			double Vx = 0.5*(r.nextDouble()-0.5);
@@ -49,7 +49,7 @@ public class Spawner {
 			
 			// Create each planet and add to array
 			Planet planet = new PlanetBuilder()
-					.withMass(mass)
+					.withMass(mass*10)
 					.withRadius(radius)
 					.withScaledVelocity(Vx,Vy)
 					.withRandomColour()
@@ -58,7 +58,6 @@ public class Spawner {
 			//spawn the current planet
 			spawnRandom(window,planet);
 			planetList.add(planet);
-			
 		}
 		
 	}
